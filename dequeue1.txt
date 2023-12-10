@@ -1,0 +1,106 @@
+/*
+A double-ended queue (deque) is a linear list in which additions and deletions may be made at either end. Obtain a data
+representation mapping a deque into a one-dimensional array. Write C++ program to simulate deque with functions to add 
+and delete elements from either end of the deque. 
+*/
+
+#include<iostream>
+#define MAX 10
+using namespace std;
+
+struct que
+{
+    int arr[MAX];
+    int front, rear;
+};
+
+void init(struct que *q)
+{
+    q->front = q->rear = -1;
+}
+
+void print(struct que q)
+{
+    for (int i = q.front; i != q.rear; i = (i + 1) % MAX)
+        cout << "\t" << q.arr[i];
+    cout << "\t" << q.arr[q.rear];
+}
+
+int isempty(struct que q)
+{
+    return q.rear == -1 ? 1 : 0;
+}
+
+void add(struct que *q, int data, int offset)
+{
+    if (isempty(*q))
+        q->front = q->rear = 0;
+    else
+        offset == 1 ? q->front = (q->front - 1 + MAX) % MAX : q->rear = (q->rear + 1) % MAX;
+
+    q->arr[offset == 1 ? q->front : q->rear] = data;
+}
+
+int del(struct que *q, int offset)
+{
+    int data = q->arr[offset == 1 ? q->front : q->rear];
+    
+    if (q->front == q->rear)
+        init(q);
+    else
+        offset == 1 ? q->front = (q->front + 1) % MAX : q->rear = (q->rear - 1 + MAX) % MAX;
+
+    return data;
+}
+
+int main()
+{
+    struct que q;
+    int data, ch;
+    init(&q);
+
+    do
+    {
+        cout << "\t\n1.Insert front"
+                "\t\n2.Insert rear"
+                "\t\n3.Delete front"
+                "\t\n4.Delete rear"
+                "\t\n5.Print"
+                "\t\n6.Exit";
+        cout << "\nEnter your choice : ";
+        cin >> ch;
+
+        switch (ch)
+        {
+        case 1:
+        case 2:
+            cout << "\nEnter data to insert " << (ch == 1 ? "front" : "rear") << " : ";
+            cin >> data;
+            add(&q, data, ch);
+            break;
+
+        case 3:
+        case 4:
+            if (isempty(q))
+                cout << "\nDequeue is empty!!!";
+            else
+            {
+                data = del(&q, ch);
+                cout << "\nDeleted data is : " << data;
+            }
+            break;
+
+        case 5:
+            if (isempty(q))
+                cout << "\nDequeue is empty!!!";
+            else
+            {
+                cout << "\nDequeue elements are : ";
+                print(q);
+            }
+            break;
+        }
+    } while (ch != 6);
+
+    return 0;
+}

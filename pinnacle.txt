@@ -1,0 +1,146 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Node {
+public:
+    int prn;
+    string name;
+    Node* next;
+
+    Node(int x, string nm) : prn(x), name(nm), next(nullptr) {}
+};
+
+class List {
+public:
+    Node* start;
+
+    List() : start(nullptr) {}
+
+    void create() {
+        if (start == nullptr) {
+            int no;
+            string nam;
+            cout << "Enter PRN number: ";
+            cin >> no;
+            cout << "Enter name: ";
+            cin >> nam;
+            start = new Node(no, nam);
+            cout << "\n=============== List Created ===============";
+        }
+        else {
+            cout << "\nList is already created.";
+        }
+    }
+
+    void display() {
+        Node* t = start;
+        if (start == nullptr)
+            cout << "\nList is Empty";
+        else {
+            cout << "\n=============== List: ===============\n";
+            while (t != nullptr) {
+                cout << t->prn << " " << t->name << " \n";
+                t = t->next;
+            }
+        }
+    }
+
+    void insertAtBeginning() {
+        if (start == nullptr)
+            create();
+        else {
+            int no;
+            string nam;
+            cout << "\nEnter PRN Number : ";
+            cin >> no;
+            cout << "Enter Name : ";
+            cin >> nam;
+            Node* temp = new Node(no, nam);
+            temp->next = start;
+            start = temp;
+            cout << "Inserted " << temp->name << " at the beginning.";
+        }
+    }
+
+    void insertAtEnd() {
+        if (start == nullptr)
+            create();
+        else {
+            int no;
+            string nam;
+            cout << "\nEnter PRN Number : ";
+            cin >> no;
+            cout << "Enter Name : ";
+            cin >> nam;
+            Node* t = start;
+            while (t->next != nullptr)
+                t = t->next;
+            t->next = new Node(no, nam);
+        }
+    }
+
+    void insertAfter() {
+        int prev_no;
+        cout << "\nEnter PRN No. after do you want insert : ";
+        cin >> prev_no;
+        Node* t = start;
+        string nam;
+        int flag = 0, no;
+        while (t != nullptr) {
+            if (t->prn == prev_no) {
+                flag = 1;
+                break;
+            }
+            t = t->next;
+        }
+        if (flag == 1) {
+            cout << "\nEnter PRN Number : ";
+            cin >> no;
+            cout << "Enter Name : ";
+            cin >> nam;
+            Node* p = new Node(no, nam);
+            p->next = t->next;
+            t->next = p;
+        }
+        else {
+            cout << "\n" << prev_no << " is not in list.";
+        }
+    }
+};
+
+int main() {
+    List l1, l2, *l;
+    l = &l1;
+
+    int choice;
+    do {
+        cout << "\n1. Create\n2. Insert President\n3. Insert secretary\n4. Insert after position(member)\n"
+             << "5. Display list\n6. Exit\nEnter your choice :\t";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                l->create();
+                break;
+            case 2:
+                l->insertAtBeginning();
+                break;
+            case 3:
+                l->insertAtEnd();
+                break;
+            case 4:
+                l->insertAfter();
+                break;
+            case 5:
+                l->display();
+                break;
+            default:
+                cout << "Wrong choice";
+        }
+    } while (choice != 6);
+
+   
+    return 0;
+}

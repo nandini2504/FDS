@@ -1,0 +1,120 @@
+#include <iostream>
+#include <unordered_set>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+void insert(Node*& head, int data) {
+    Node* newNode = new Node(data);
+    newNode->next = head;
+    head = newNode;
+}
+
+void display(Node* head) {
+    Node* temp = head;
+    while (temp) {
+        cout << "-->" << temp->data;
+        temp = temp->next;
+    }
+    cout << "\n";
+}
+
+Node* processIntersection(Node* head1, Node* head2) {
+    unordered_set<int> dataSet;
+    Node* result = nullptr;
+    Node* temp = head1;
+
+    while (temp) {
+        dataSet.insert(temp->data);
+        temp = temp->next;
+    }
+
+    temp = head2;
+    while (temp) {
+        if (dataSet.find(temp->data) != dataSet.end()) {
+            insert(result, temp->data);
+        }
+        temp = temp->next;
+    }
+
+    return result;
+}
+
+Node* processUnion(Node* head1, Node* head2) {
+    unordered_set<int> dataSet;
+    Node* result = nullptr;
+    Node* temp = head1;
+
+    while (temp) {
+        dataSet.insert(temp->data);
+        insert(result, temp->data);
+        temp = temp->next;
+    }
+
+    temp = head2;
+    while (temp) {
+        if (dataSet.find(temp->data) == dataSet.end()) {
+            insert(result, temp->data);
+        }
+        temp = temp->next;
+    }
+
+    return result;
+}
+
+void processNeither(Node* head, Node* exclusion) {
+    Node* temp = head;
+
+    while (temp) {
+        Node* temp1 = exclusion;
+        bool found = false;
+
+        while (temp1) {
+            if (temp->data == temp1->data) {
+                found = true;
+                break;
+            }
+            temp1 = temp1->next;
+        }
+
+        if (!found) {
+            cout << "-->" << temp->data;
+        }
+
+        temp = temp->next;
+    }
+}
+
+int main() {
+    Node *S = nullptr, *A = nullptr, *B = nullptr, *R = nullptr, *C = nullptr;
+
+    for (int roll : {10, 50, 30, 40, 60, 70, 90}) insert(S, roll);
+    cout << "Total no of students roll no:\n";
+    display(S);
+
+    for (int roll : {10, 50, 30, 90}) insert(A, roll);
+    cout << "\nRoll no of students who like vanilla IceCream:\n";
+    display(A);
+
+    for (int roll : {40, 10, 50}) insert(B, roll);
+    cout << "\nRoll no of students who like Butterscotch IceCream\n";
+    display(B);
+
+    cout << "\nRoll no of students who likes both vanilla & Butterscotch IceCream:\n";
+    R = processIntersection(A, B);
+    display(R);
+
+    cout << "\nStudents who like either butterscotch and vanilla but not both\n";
+    C = processUnion(A, B);
+    processNeither(C, R);
+    cout << "\nStudents who like neither vanilla nor butterscotch\n";
+    processNeither(S, C);
+
+    return 0;
+}
